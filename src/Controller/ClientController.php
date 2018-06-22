@@ -39,12 +39,25 @@ class ClientController extends Controller
     }
 
     /**
-     * Display items where amount is greater than 0
+     * Display items where amount is greater than zero
      * @Route("/items/found", name="client_get_items_where_amount_is_greater_than_0")
      */
     public function getItemsWhereAmountIsGreaterThanZero()
     {
         $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/found');
+        $items = json_decode($response->getBody());
+        return $this->render('client/index.html.twig', [
+            'items' => $items
+        ]);
+    }
+
+    /**
+     * Display items where amount is equal to zero
+     * @Route("/items/notfound", name="client_get_items_where_amount_is_equal_to_zero")
+     */
+    public function getItemsWhereAmountIsEqualToZero()
+    {
+        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/notfound');
         $items = json_decode($response->getBody());
         return $this->render('client/index.html.twig', [
             'items' => $items
