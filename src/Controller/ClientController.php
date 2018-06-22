@@ -65,6 +65,19 @@ class ClientController extends Controller
     }
 
     /**
+     * Display items where amount is greater than five
+     * @Route("/items/foundfive", name="client_get_items_where_amount_is_greater_than_five")
+     */
+    public function getItemsWhereAmountIsGreaterThanFive()
+    {
+        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/foundfive');
+        $items = json_decode($response->getBody());
+        return $this->render('client/index.html.twig', [
+            'items' => $items
+        ]);
+    }
+
+    /**
      * Create new item
      * @Route("/create")
      */
