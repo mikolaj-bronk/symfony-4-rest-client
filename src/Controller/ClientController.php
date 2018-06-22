@@ -27,11 +27,24 @@ class ClientController extends Controller
 
     /**
      * Display all items
-     * @Route("/", name="client")
+     * @Route("/items/all", name="client_get_all")
      */
     public function getAll()
     {
         $response = $this->client->request('GET', 'http://127.0.0.1:8000/items');
+        $items = json_decode($response->getBody());
+        return $this->render('client/index.html.twig', [
+            'items' => $items
+        ]);
+    }
+
+    /**
+     * Display items where amount is greater than 0
+     * @Route("/items/found", name="client_get_items_where_amount_is_greater_than_0")
+     */
+    public function getItemsWhereAmountIsGreaterThanZero()
+    {
+        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/found');
         $items = json_decode($response->getBody());
         return $this->render('client/index.html.twig', [
             'items' => $items
@@ -44,10 +57,10 @@ class ClientController extends Controller
      */
     public function create(Request $request)
     {
-        //TODO zmienić na jakiś lepszy sposób
         $form = $this->createForm(CreateType::class);
+        $form->handleRequest($request);
 
-        if(!empty($request->get('create')['name'])) {
+        if($form->isSubmitted() && $form->isValid()) {
             $response = $this->client->request('POST', 'http://127.0.0.1:8000/add', [
                 'form_params' => [
                     'name' => $request->get('create')['name'],
@@ -57,7 +70,7 @@ class ClientController extends Controller
         }
 
        return $this->render('client/create.html.twig',[
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

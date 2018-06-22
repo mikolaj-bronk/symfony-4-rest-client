@@ -6,6 +6,14 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    <div style="margin-top: 20px; margin-bottom: 20px">
+        <a href="/create"><button>Dodaj</button></a>
+        <a href="/items/all"><button>Pokaż wszystkie</button></a>
+        <a href="/items/found"><button>Pokaż znajdujące się na stanie</button></a>
+        <a href="/create"><button>Pokaż brak</button></a>
+        <a href="/create"><button>Pokaż większe niż 5</button></a>
+    </div>
+
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
