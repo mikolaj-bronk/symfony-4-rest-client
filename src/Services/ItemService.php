@@ -112,7 +112,6 @@ class ItemService
 
         try {
             $request = $this->client->request($http_type, $this->api_url . $url, $data);
-            dump($request);
         } catch (RequestException $e) {
             $this->logger->error('guzzle exception error: ' . $e->getMessage());
         }
