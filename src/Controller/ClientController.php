@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dictionary\MessageDictionary;
 use App\Dictionary\UrlDictionary;
 use App\Entity\Items;
 use App\Form\CreateType;
@@ -10,8 +11,7 @@ use App\Services\ItemService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\{
-    Response,
-    Request
+    Response, Request, Session\Flash\FlashBag
 };
 
 use GuzzleHttp\Client;
@@ -89,9 +89,15 @@ class ClientController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $name = $request->get('create')['name'];
-            $amount = $request->get('create')['amount'];
-            $this->items_service->createItem($name, $amount);
+            $formData = $request->get('create');
+
+            $message = $this->items_service->createItem(
+                $formData['name'],
+                $formData['amount']
+            );
+
+            $this->addFlash(MessageDictionary::SUCCESS_CLASS, $message);
+
             return $this->redirect(UrlDictionary::GET_ALL_ITEMS_URL);
         }
 
@@ -100,13 +106,15 @@ class ClientController extends Controller
         ]);
     }
 
+
     /**
      * Delete item
      * @Route("/items/delete/{id}", name="item_delete")
      */
     public function delete(int $id)
     {
-        $this->items_service->deleteItem($id);
+        $message = $this->items_service->deleteItem($id);
+        $this->addFlash(MessageDictionary::SUCCESS_CLASS, $message);
 
         return $this->redirect(UrlDictionary::GET_ALL_ITEMS_URL);
     }

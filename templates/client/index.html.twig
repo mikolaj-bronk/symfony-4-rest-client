@@ -2,12 +2,21 @@
 
 {% block title %}Hel {% endblock %}
 {% block body %}
+    {% for label, messages in app.flashes(['warning', 'error', 'success']) %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <table border="1">
         <thead>
              <tr>
                 <th>id</th>
                 <th>name</th>
                 <th>amount</th>
+                <th>del</th>
             </tr>
         </thead>
     {% for item in items %}
@@ -21,7 +30,7 @@
                 {{ item.amount }}
             </td>
             <td>
-                <a href="delete/{{ item.id }}">Usuń</a>
+                <a href="{{ path('item_delete', {'id': item.id }) }}">Delete</a>
             </td>
         </tr>
     {% endfor %}
