@@ -10,7 +10,7 @@
         {% endfor %}
     {% endfor %}
 
-    <table border="1">
+    <table class="table table-bordered">
         <thead>
              <tr>
                 <th>id</th>
@@ -31,10 +31,10 @@
                 {{ item.amount }}
             </td>
             <td>
-                <a href="{{ path('item_delete', {'id': item.id }) }}">Delete</a>
+                <a href="{{ path('item_delete', {'id': item.id }) }}" class="btn btn-danger">Delete</a>
             </td>
             <td>
-                <a href="{{ path('item_update', {'id': item.id }) }}">Update</a>
+                <a href="{{ path('item_update', {'id': item.id }) }}" class="btn btn-warning">Update</a>
             </td>
         </tr>
     {% endfor %}

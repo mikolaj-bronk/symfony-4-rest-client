@@ -2,26 +2,36 @@
 
 namespace App\Form;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+
+use Symfony\Component\Form\Extension\Core\Type\{
+    NumberType,
+    TextType,
+    SubmitType
+};
+use Symfony\Component\Form\{
+    AbstractType,
+    FormBuilderInterface
+};
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UpdateType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->setMethod('PUT')
+            ->setMethod(Request::METHOD_POST)
             ->add('name', TextType::class)
             ->add('amount', NumberType::class)
-            ->add('update', SubmitType::class)
+            ->add('update', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-warning'
+                ]
+            ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             // Configure your form options here
