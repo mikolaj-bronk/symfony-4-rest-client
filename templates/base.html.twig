@@ -7,11 +7,11 @@
     </head>
     <body>
     <div style="margin-top: 20px; margin-bottom: 20px">
-        <a href="/create"><button>Create</button></a>
-        <a href="/items/all"><button>Show all</button></a>
-        <a href="/items/found"><button>Show in stock</button></a>
-        <a href="/items/notfound"><button>Show out of stock</button></a>
-        <a href="/items/foundfive"><button>Amount greater than 5</button></a>
+        <a href="{{ path('item_create') }}"><button>Create</button></a>
+        <a href="{{ path('items_all') }}"><button>Show all</button></a>
+        <a href="{{ path('items_available') }}"><button>Show in stock</button></a>
+        <a href="{{ path('items_unavailable') }}"><button>Show out of stock</button></a>
+        <a href="{{ path('items_greater_than_five') }}"><button>Amount greater than 5</button></a>
     </div>
 
         {% block body %}{% endblock %}

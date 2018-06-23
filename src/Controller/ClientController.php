@@ -2,37 +2,39 @@
 
 namespace App\Controller;
 
+use App\Dictionary\UrlDictionary;
 use App\Entity\Items;
 use App\Form\CreateType;
+use App\Form\DeleteType;
+use App\Services\ItemService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\{
     Response,
     Request
 };
-use Symfony\Component\Form\Extension\Core\Type\{
-    TextType,
-    SubmitType
-};
+
 use GuzzleHttp\Client;
 
 class ClientController extends Controller
 {
     private $client;
+    private $items_service;
 
-    public function __construct()
+    public function __construct(ItemService $itemService)
     {
-       $this->client = new Client();
+        $this->items_service = $itemService;
+        $this->client = new Client();
     }
 
     /**
      * Display all items
-     * @Route("/items/all", name="client_get_all")
+     * @Route("/items/", name="items_all")
      */
     public function getAll()
     {
-        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items');
-        $items = json_decode($response->getBody());
+        $items = $this->items_service->getAllItems();
+
         return $this->render('client/index.html.twig', [
             'items' => $items
         ]);
@@ -40,12 +42,12 @@ class ClientController extends Controller
 
     /**
      * Display items where amount is greater than zero
-     * @Route("/items/found", name="client_get_items_where_amount_is_greater_than_0")
+     * @Route("/items/available", name="items_available")
      */
-    public function getItemsWhereAmountIsGreaterThanZero()
+    public function getAvailable()
     {
-        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/found');
-        $items = json_decode($response->getBody());
+        $items = $this->items_service->getAvailableItems();
+
         return $this->render('client/index.html.twig', [
             'items' => $items
         ]);
@@ -53,12 +55,12 @@ class ClientController extends Controller
 
     /**
      * Display items where amount is equal to zero
-     * @Route("/items/notfound", name="client_get_items_where_amount_is_equal_to_zero")
+     * @Route("/items/unavailable", name="items_unavailable")
      */
-    public function getItemsWhereAmountIsEqualToZero()
+    public function getUnavailable()
     {
-        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/notfound');
-        $items = json_decode($response->getBody());
+        $items = $this->items_service->getUnavailableItems();
+
         return $this->render('client/index.html.twig', [
             'items' => $items
         ]);
@@ -66,12 +68,12 @@ class ClientController extends Controller
 
     /**
      * Display items where amount is greater than five
-     * @Route("/items/foundfive", name="client_get_items_where_amount_is_greater_than_five")
+     * @Route("/items/greaterthan5", name="items_greater_than_five")
      */
-    public function getItemsWhereAmountIsGreaterThanFive()
+    public function getGreaterThanFive()
     {
-        $response = $this->client->request('GET', 'http://127.0.0.1:8000/items/foundfive');
-        $items = json_decode($response->getBody());
+        $items = $this->items_service->getGreaterThanFiveItems();
+
         return $this->render('client/index.html.twig', [
             'items' => $items
         ]);
@@ -79,24 +81,33 @@ class ClientController extends Controller
 
     /**
      * Create new item
-     * @Route("/create")
+     * @Route("/items/create", name="item_create")
      */
     public function create(Request $request)
     {
         $form = $this->createForm(CreateType::class);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-            $response = $this->client->request('POST', 'http://127.0.0.1:8000/add', [
-                'form_params' => [
-                    'name' => $request->get('create')['name'],
-                    'amount' => $request->get('create')['amount']
-                ]
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $name = $request->get('create')['name'];
+            $amount = $request->get('create')['amount'];
+            $this->items_service->createItem($name, $amount);
+            return $this->redirect(UrlDictionary::GET_ALL_ITEMS_URL);
         }
 
-       return $this->render('client/create.html.twig',[
+        return $this->render('client/create.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Delete item
+     * @Route("/items/delete/{id}", name="item_delete")
+     */
+    public function delete(int $id)
+    {
+        $this->items_service->deleteItem($id);
+
+        return $this->redirect(UrlDictionary::GET_ALL_ITEMS_URL);
     }
 }

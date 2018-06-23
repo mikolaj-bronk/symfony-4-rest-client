@@ -14,12 +14,14 @@
         <tr>
             <td>
                 {{ item.id }}
-            </td>
             <td>
                 {{ item.name }}
             </td>
             <td>
                 {{ item.amount }}
+            </td>
+            <td>
+                <a href="delete/{{ item.id }}">Usuń</a>
             </td>
         </tr>
     {% endfor %}
