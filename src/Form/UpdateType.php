@@ -9,15 +9,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CreateType extends AbstractType
+class UpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->setMethod('POST')
+            ->setMethod('PUT')
             ->add('name', TextType::class)
             ->add('amount', NumberType::class)
-            ->add('create', SubmitType::class)
+            ->add('update', SubmitType::class)
         ;
     }
 

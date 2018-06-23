@@ -7,6 +7,7 @@ use App\Dictionary\UrlDictionary;
 use App\Entity\Items;
 use App\Form\CreateType;
 use App\Form\DeleteType;
+use App\Form\UpdateType;
 use App\Services\ItemService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -80,6 +81,40 @@ class ClientController extends Controller
     }
 
     /**
+     * Update item
+     * @Route("/update/{id}", name="item_update")
+     */
+    public function update(int $id, Request $request)
+    {
+        $item = $this->items_service->getOneItem($id);
+
+        $form = $this->createForm(UpdateType::class, [
+            'name' => $item->name,
+            'amount' => $item->amount
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $request->get('update');
+
+            $message = $this->items_service->updateItem(
+                $id,
+                $formData['name'],
+                $formData['amount']
+            );
+
+            $this->addFlash(MessageDictionary::SUCCESS_CLASS, $message);
+
+            return $this->redirect(UrlDictionary::GET_ALL_ITEMS_URL);
+        }
+
+        return $this->render('client/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * Create new item
      * @Route("/items/create", name="item_create")
      */
@@ -109,7 +144,7 @@ class ClientController extends Controller
 
     /**
      * Delete item
-     * @Route("/items/delete/{id}", name="item_delete")
+     * @Route("/delete/{id}", name="item_delete")
      */
     public function delete(int $id)
     {

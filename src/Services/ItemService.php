@@ -34,6 +34,14 @@ class ItemService
         return $items;
     }
 
+    public function getOneItem($id)
+    {
+        $response = $this->handleRequest(Request::METHOD_GET, UrlDictionary::GET_ONE_ITEM_URL.'/'.$id);
+        $item = $this->getResponseBody($response);
+
+        return $item;
+    }
+
     public function getAvailableItems()
     {
         $response = $this->handleRequest(Request::METHOD_GET, UrlDictionary::GET_AVAILABLE_ITEMS_URL);
@@ -72,6 +80,20 @@ class ItemService
         return $this->getResponseBody($response, false);
     }
 
+    public function updateItem($id, $name, $amount)
+    {
+        $data = [
+            'form_params' => [
+                'name' => $name,
+                'amount' => $amount
+            ],
+        ];
+
+        $response = $this->handleRequest(Request::METHOD_PUT, UrlDictionary::UPDATE_ITEM_URL.'/'.$id, $data);
+
+        return $this->getResponseBody($response, false);
+    }
+
     public function deleteItem($id)
     {
         $data = [
@@ -90,6 +112,7 @@ class ItemService
 
         try {
             $request = $this->client->request($http_type, $this->api_url . $url, $data);
+            dump($request);
         } catch (RequestException $e) {
             $this->logger->error('guzzle exception error: ' . $e->getMessage());
         }

@@ -16,7 +16,8 @@
                 <th>id</th>
                 <th>name</th>
                 <th>amount</th>
-                <th>del</th>
+                <th>delete</th>
+                <th>update</th>
             </tr>
         </thead>
     {% for item in items %}
@@ -31,6 +32,9 @@
             </td>
             <td>
                 <a href="{{ path('item_delete', {'id': item.id }) }}">Delete</a>
+            </td>
+            <td>
+                <a href="{{ path('item_update', {'id': item.id }) }}">Update</a>
             </td>
         </tr>
     {% endfor %}
